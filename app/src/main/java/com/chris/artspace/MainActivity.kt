@@ -55,8 +55,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    ArtSpaceLayout(modifier = Modifier)
+                   
 
+                    ArtSpaceLayout(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                        .verticalScroll(rememberScrollState()))
                 }
             }
         }
@@ -100,59 +104,51 @@ fun ArtSpaceLayout(modifier: Modifier) {
     var previousImage = { artSpaceArts = artControlPrevious(artSpaceArts) }
     var nextImage = { artSpaceArts = artControlNext(artSpaceArts) }
 
+    var imageDisplay = when (artSpaceArts) {
+        1 -> R.drawable.image_003
+        2 -> R.drawable.image_002
+        3 -> R.drawable.image_003
+        4 -> R.drawable.image_004
+        else -> R.drawable.image_005
+    }
+
+    var imageTitle = when (artSpaceArts) {
+        1 -> "a walkway lined with red lights leading into the distance"
+        2 -> "the sun is setting over the ocean on a cloudy day"
+        3 -> "a person walking on a beach next to the ocean"
+        4 -> "a red and orange flower in a vase"
+        else -> "a view of a body of water with mountains in the background"
+    }
+
+    var imageArtist = when (artSpaceArts) {
+        1 -> "Andrea de Santis"
+        2 -> "Gaspar Zaldo"
+        3 -> "Haotian Zheng"
+        4 -> "Julia Solonina"
+        else -> "Tufis Alexandru"
+    }
+
+    var imageYear = when (artSpaceArts) {
+        1 -> "2023"
+        2 -> "2022"
+        3 -> "2023"
+        4 -> "2024"
+        else -> "2021"
+    }
 
 
-
-    Column (modifier = Modifier
-        .fillMaxSize()
-        .padding(8.dp)
-        .verticalScroll(rememberScrollState()),
+    Column (modifier = modifier,
         verticalArrangement = Arrangement.Center
         ) {
 
-        Card(
-            elevation = CardDefaults.cardElevation(10.dp),
-            colors = CardDefaults.cardColors(Color.White),
-            shape = RectangleShape,
-            modifier = Modifier.padding(top = 40.dp)
-            //elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-        ) {
+        ArtDisplay(shape = RectangleShape, imageResource = imageDisplay)
 
-            Image(
-                painter = painterResource(id = R.drawable.image_003),
-                contentDescription = "Art",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .size(height = 450.dp, width = 450.dp)
-                    //.border(BorderStroke(1.dp, Color.DarkGray))
-                    //.shadow(15.dp)
-                    //.background(Color.White),
-
-                )
-
-        }
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        Card(
-            elevation = CardDefaults.cardElevation(1.dp),
-            colors = CardDefaults.cardColors(Color.LightGray),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 5.dp, bottom = 5.dp),
-            shape = RectangleShape
-            //elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-        ) {
-            Text(text = "ART NAME $artSpaceArts", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(top = 15.dp, start = 10.dp) )
+        ArtDisplayDetail(artName = imageTitle, artist = imageArtist, year = imageYear)
 
-            Row (modifier = Modifier.padding(bottom = 15.dp, start = 10.dp)) {
-                Text(text = "ABC", fontWeight = FontWeight.Bold )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "ABC", fontStyle = FontStyle.Italic)
-            }
-        }
-
-        //Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Row (
             modifier = Modifier.fillMaxSize(),
@@ -160,38 +156,11 @@ fun ArtSpaceLayout(modifier: Modifier) {
             verticalAlignment = Alignment.Bottom
             ) {
 
-            
-            Button(onClick = previousImage, modifier = Modifier.size(width = 120.dp, height = 35.dp)) {
-                Text(text = "Previous")
-            }
-            Button(onClick = nextImage , modifier = Modifier.size(width = 120.dp, height = 35.dp)) {
-                Text(text = "Next")
-            }
+            ArtSpaceNavigation(name = "Previous", previousImage)
+            ArtSpaceNavigation(name = "Next", nextImage)
+
         }
-
-//        Box (
-//            Modifier
-//                .background(Color.Green)
-//                .fillMaxWidth()) {
-//
-//            Column (modifier = Modifier.padding(10.dp)) {
-//
-//                Text(text = "ART NAME", style = MaterialTheme.typography.headlineMedium, )
-//
-//                Row {
-//                    Text(text = "ABC", fontWeight = FontWeight.Bold)
-//                    Spacer(modifier = Modifier.width(8.dp))
-//                    Text(text = "ABC", fontStyle = FontStyle.Italic)
-//                }
-//
-//            }
-//
-//        }
-
-
-
     }
-
 }
 
 @Composable
@@ -205,18 +174,14 @@ fun ArtDisplay (
         colors = CardDefaults.cardColors(Color.White),
         shape = shape,
         modifier = Modifier.padding(top = 40.dp)
-        //elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-    ) {
 
+    ) {
         Image(
             painter = painterResource(id = imageResource),
             contentDescription = "Art",
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .size(height = 450.dp, width = 450.dp)
-            //.border(BorderStroke(1.dp, Color.DarkGray))
-            //.shadow(15.dp)
-            //.background(Color.White),
         )
 
     }
@@ -232,12 +197,13 @@ fun ArtDisplayDetail (
         elevation = CardDefaults.cardElevation(1.dp),
         colors = CardDefaults.cardColors(Color.LightGray),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.dp, bottom = 5.dp),
+            .fillMaxSize()
+            .padding(top = 5.dp, bottom = 5.dp).size(width = 500.dp, height = 135.dp),
         shape = RectangleShape
         //elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
-        Text(text = artName, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(top = 15.dp, start = 10.dp) )
+        Text(text = artName, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.padding(top = 15.dp, start = 10.dp) )
+        Spacer(modifier = Modifier.height(12.dp))
 
         Row (modifier = Modifier.padding(bottom = 15.dp, start = 10.dp)) {
             Text(text = artist, fontWeight = FontWeight.Bold )
